@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/BurntSushi/toml"
+	"github.com/tencentyun/scf-go-lib/cloudfunction"
 )
 
 var config Config
@@ -139,7 +140,7 @@ func (u *User) init() error {
 	return nil
 }
 
-func main() {
+func start() {
 	if _, err := toml.DecodeFile("./configs/config.toml", &config); err != nil {
 		log.Panicln(err)
 	}
@@ -148,7 +149,7 @@ func main() {
 	if err != nil {
 		log.Panicln(err)
 	}
-	mailBody = strings.Replace(mailBody, "%7B%7Bversion%7D%7D", "v0.1", -1)
+	mailBody = strings.Replace(mailBody, "%7B%7Bversion%7D%7D", "v0.2", -1)
 
 	for i, v := range config.User {
 		var err error
@@ -171,4 +172,7 @@ func main() {
 		mailBody = strings.Replace(mailBody, "{{msg}}", "打卡成功！！！", -1)
 		mail.SendEmail(v.Mail.Username, v.Mail.Username, v.Mail.Password, "HTU移动校工打卡推送", string(mailBody))
 	}
+}
+func main() {
+	cloudfunction.Start(start)
 }
