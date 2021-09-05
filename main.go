@@ -149,7 +149,7 @@ func start() {
 	if err != nil {
 		log.Panicln(err)
 	}
-	mailBody = strings.Replace(mailBody, "%7B%7Bversion%7D%7D", "v0.2", -1)
+	mailBody = strings.Replace(mailBody, "%7B%7Bversion%7D%7D", "v0.3", -1)
 
 	for i, v := range config.User {
 		var err error
