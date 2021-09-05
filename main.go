@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -142,12 +141,14 @@ func (u *User) init() error {
 
 func start() {
 	if _, err := toml.DecodeFile("./configs/config.toml", &config); err != nil {
-		log.Panicln(err)
+		fmt.Println(err)
+		panic(err)
 	}
 	mailBodyBytes, err := ioutil.ReadFile("./mail.html")
 	mailBody := string(mailBodyBytes)
 	if err != nil {
-		log.Panicln(err)
+		fmt.Println(err)
+		panic(err)
 	}
 	mailBody = strings.Replace(mailBody, "%7B%7Bversion%7D%7D", "v0.3", -1)
 
@@ -155,20 +156,20 @@ func start() {
 		var err error
 		err = v.init()
 		if err != nil {
-			log.Println("初始化失败：" + err.Error())
+			fmt.Println("初始化失败：" + err.Error())
 			continue
 		}
-		log.Printf("###第 %d 位用户###\n", i+1)
-		log.Println("用户名：" + v.Name)
+		fmt.Printf("###第 %d 位用户###\n", i+1)
+		fmt.Println("用户名：" + v.Name)
 		mailBody = strings.Replace(mailBody, "{{name}}", v.Name, -1)
 		now := time.Now()
 		mailBody = strings.Replace(mailBody, "{{date}}", fmt.Sprintf("%02d-%02d-%02d %02d:%02d:%02d", now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second()), -1)
 		err = v.checkin()
 		if err != nil {
-			log.Println("打卡失败：" + err.Error())
+			fmt.Println("打卡失败：" + err.Error())
 			continue
 		}
-		log.Println("打卡成功")
+		fmt.Println("打卡成功")
 		mailBody = strings.Replace(mailBody, "{{msg}}", "打卡成功！！！", -1)
 		mail.SendEmail(v.Mail.Username, v.Mail.Username, v.Mail.Password, "HTU移动校工打卡推送", string(mailBody))
 	}
