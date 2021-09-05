@@ -1,4 +1,4 @@
 *.exe
-*.bak
+config.toml
 *_test.go
 *.zip

@@ -1,4 +1,6 @@
 # 请不要删除任何双引号！！！
+# 所有的值都应该包括在双引号之内
+# 使用时请删除本文件名的.bak后缀：config.toml.bak -> config.toml
 
 [[User]]
 [User.Cookie]
