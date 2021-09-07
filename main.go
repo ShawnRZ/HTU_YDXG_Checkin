@@ -88,9 +88,9 @@ func (u User) checkin() error {
 	for k, v := range u.Postdata {
 		postBody.Add(k, v)
 	}
-	fmt.Printf("postBody: %#v\n", postBody)
 	postBody.Add("_bjmf_fields_s", `{"gps":["v"]}`)
 	postBody.Add("form_id", u.FormID)
+	fmt.Printf("postBody: %#v\n", postBody)
 	req, err := http.NewRequest("POST", u.CheckinUrl, strings.NewReader(postBody.Encode()))
 	if err != nil {
 		return err
@@ -110,6 +110,12 @@ func (u User) checkin() error {
 	if err != nil {
 		return err
 	}
+	if strings.Contains(string(body), `<div class="message">提示</div>`) {
+		reg := regexp.MustCompile(`<div class="desc">.*?</div>`)
+		msg := reg.Find(body)
+		return errors.New(string(msg))
+	}
+
 	fmt.Printf("body: %v\n", string(body))
 	return nil
 }
@@ -138,7 +144,7 @@ func start() {
 		fmt.Println(err)
 		panic(err)
 	}
-	mailBody = strings.Replace(mailBody, "%7B%7Bversion%7D%7D", "v0.3", -1)
+	mailBody = strings.Replace(mailBody, "%7B%7Bversion%7D%7D", "v0.4", -1)
 
 	for i, v := range config.User {
 		var err error
@@ -155,6 +161,8 @@ func start() {
 		err = v.checkin()
 		if err != nil {
 			fmt.Println("打卡失败：" + err.Error())
+			mailBody = strings.Replace(mailBody, "{{msg}}", "打卡失败！"+err.Error(), -1)
+			mail.SendEmail(v.Mail.Username, v.Mail.Username, v.Mail.Password, "HTU移动校工打卡推送", string(mailBody))
 			continue
 		}
 		fmt.Println("打卡成功")

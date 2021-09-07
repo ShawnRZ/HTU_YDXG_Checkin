@@ -9,7 +9,7 @@ remember_student_key   = "*************************"
 remember_student_value = "*************************"
 [User.Postdata]
 # 签到位置
-"formdata[v]" = ""
+"formdata[v]" = "xx省xx市xxxxx"
 # 您是否在校？
 # 0: 是 1: 否
 "formdata[q]" = "1"
