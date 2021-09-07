@@ -15,12 +15,19 @@ type Postdata struct {
 	X string
 	W string
 	A string
+	Y string
 	B string
 	C string
 	D string
 	E string
 	F string
 	G string
+	H string
+	I string
+	J string
+	K string
+	L string
+	M string
 	R string
 	S string
 	T string
