@@ -1,5 +1,7 @@
 package main
 
+import "net/http"
+
 type Config struct {
 	User []User `toml:"User"`
 }
@@ -15,6 +17,7 @@ type User struct {
 	Name       string
 	CheckinUrl string
 	Mail       Mail `toml:"Mail"`
+	Client     *http.Client
 }
 
 type Mail struct {

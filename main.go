@@ -16,7 +16,6 @@ import (
 )
 
 var config Config
-var client *http.Client = &http.Client{}
 
 func (u *User) login() error {
 	var err error
@@ -30,7 +29,7 @@ func (u *User) login() error {
 	req.AddCookie(&http.Cookie{
 		Name: u.Cookie.RememberStudentKey, Value: u.Cookie.RememberStudentValue,
 	})
-	resp, err := client.Do(req)
+	resp, err := u.Client.Do(req)
 	if err != nil {
 		return err
 	}
@@ -64,7 +63,7 @@ func (u *User) getFormID() error {
 	req.AddCookie(&http.Cookie{
 		Name: u.Cookie.RememberStudentKey, Value: u.Cookie.RememberStudentValue,
 	})
-	resp, err := client.Do(req)
+	resp, err := u.Client.Do(req)
 	if err != nil {
 		return err
 	}
@@ -102,7 +101,7 @@ func (u User) checkin() error {
 	req.AddCookie(&http.Cookie{
 		Name: u.Cookie.RememberStudentKey, Value: u.Cookie.RememberStudentValue,
 	})
-	resp, err := client.Do(req)
+	resp, err := u.Client.Do(req)
 	if err != nil {
 		return err
 	}
@@ -116,12 +115,13 @@ func (u User) checkin() error {
 		return errors.New(string(msg))
 	}
 
-	fmt.Printf("body: %v\n", string(body))
+	// fmt.Printf("body: %v\n", string(body))
 	return nil
 }
 
 func (u *User) init() error {
 	var err error
+	u.Client = &http.Client{}
 	err = u.login()
 	if err != nil {
 		return err
