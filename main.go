@@ -155,19 +155,25 @@ func start() {
 		}
 		fmt.Printf("###第 %d 位用户###\n", i+1)
 		fmt.Println("用户名：" + v.Name)
-		mailBody = strings.Replace(mailBody, "{{name}}", v.Name, -1)
+		mailBodyTmp := strings.Replace(mailBody, "{{name}}", v.Name, -1)
 		now := time.Now()
-		mailBody = strings.Replace(mailBody, "{{date}}", fmt.Sprintf("%02d-%02d-%02d %02d:%02d:%02d", now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second()), -1)
+		mailBodyTmp = strings.Replace(mailBodyTmp, "{{date}}", fmt.Sprintf("%02d-%02d-%02d %02d:%02d:%02d", now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second()), -1)
 		err = v.checkin()
 		if err != nil {
 			fmt.Println("打卡失败：" + err.Error())
-			mailBody = strings.Replace(mailBody, "{{msg}}", "打卡失败！"+err.Error(), -1)
-			mail.SendEmail(v.Mail.Username, v.Mail.Username, v.Mail.Password, "HTU移动校工打卡推送", string(mailBody))
+			mailBodyTmp = strings.Replace(mailBodyTmp, "{{msg}}", "打卡失败！"+err.Error(), -1)
+			err = mail.SendEmail(v.Mail.Username, v.Mail.Username, v.Mail.Password, "HTU移动校工打卡推送", string(mailBodyTmp))
+			if err != nil {
+				fmt.Println("邮件发送失败", err)
+			}
 			continue
 		}
 		fmt.Println("打卡成功")
-		mailBody = strings.Replace(mailBody, "{{msg}}", "打卡成功！！！", -1)
-		mail.SendEmail(v.Mail.Username, v.Mail.Username, v.Mail.Password, "HTU移动校工打卡推送", string(mailBody))
+		mailBodyTmp = strings.Replace(mailBodyTmp, "{{msg}}", "打卡成功！！！", -1)
+		err = mail.SendEmail(v.Mail.Username, v.Mail.Username, v.Mail.Password, "HTU移动校工打卡推送", string(mailBodyTmp))
+		if err != nil {
+			fmt.Println("邮件发送失败", err)
+		}
 	}
 }
 func main() {

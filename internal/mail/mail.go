@@ -15,7 +15,7 @@ func SendEmail(from string, to string, password string, title string, body strin
 	if err != nil {
 		return err
 	}
-	a := smtp.PlainAuth("", from, "yfktavpmfbxvbfjc", "smtp.qq.com")
+	a := smtp.PlainAuth("", from, password, "smtp.qq.com")
 	err = c.Auth(a)
 	if err != nil {
 		return err

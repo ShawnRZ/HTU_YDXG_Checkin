@@ -2,3 +2,4 @@ config.toml
 *.zip
 *.txt
 *.code-workspace
+*.exe
